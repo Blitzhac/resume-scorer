@@ -32,20 +32,29 @@ def clean_github_data(profile, repos):
         "original_repos":  original_repos,
     }
     
-def clean_linkedin_data(summary):
+def clean_linkedin_data(summary, skills, positions):
     """
-    Takes extract_profile_summary() output and returns scorer-ready dict.
+    Takes extract_profile_summary(), extract_skills(),
+    and extract_positions() output and returns scorer-ready dict.
     """
     return {
-        "name":           f"{summary['first_name']} {summary['last_name']}",
-        "headline":       summary.get("headline", ""),
-        "summary":        summary.get("summary", ""),
-        "industry":       summary.get("industry", ""),
-        "has_headline":   bool(summary.get("headline")),   # is headline non-empty?
-        "has_summary":    bool(summary.get("summary")),    # is summary non-empty?
-        "has_website":    bool(summary.get("website")),    # is website non-empty?
-        "headline_length": len(summary.get("headline", "")),  # number of characters in headline
-        "summary_length":  len(summary.get("summary", "")),  # number of characters in summary
+        # existing fields — keep all of these
+        "name":             f"{summary['first_name']} {summary['last_name']}",
+        "headline":         summary.get("headline", ""),
+        "summary":          summary.get("summary", ""),
+        "industry":         summary.get("industry", ""),
+        "has_headline":     bool(summary.get("headline")),
+        "has_summary":      bool(summary.get("summary")),
+        "has_website":      bool(summary.get("website")),
+        "headline_length":  len(summary.get("headline", "")),
+        "summary_length":   len(summary.get("summary", "")),
+
+        "skills":           skills,
+        "skill_count":      len(skills),
+        "positions":        positions,
+        "position_count":   len(positions),
+        "has_experience":   len(positions) > 0,
+        "current_role":     next((pos for pos in positions if pos.get("is_current")), None),
     }
 
 import re
